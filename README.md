@@ -14,11 +14,7 @@ You will need a [WorkOS account](https://dashboard.workos.com/signup).
 
 2. After creating the redirect URI, navigate to the API keys tab and copy the _Client ID_ and the _Secret Key_. Rename the `.env.example` file to `.env` and supply your Client ID and API key as environment variables.
 
-3. Additionally, create a cookie password as the private key used to encrypt the session cookie. Copy the output into the environment variable `WORKOS_COOKIE_PASSWORD`.
-
-   It has to be at least 32 characters long. You can use https://1password.com/password-generator/ to generate strong passwords.
-
-4. Verify your `.env` file has the following variables filled.
+3. Verify your `.env` file has the following variables filled.
 
    ```bash
    WORKOS_CLIENT_ID=<YOUR_CLIENT_ID>
@@ -27,13 +23,13 @@ You will need a [WorkOS account](https://dashboard.workos.com/signup).
    WORKOS_COOKIE_PASSWORD=<YOUR_COOKIE_PASSWORD>
    ```
 
-5. Install the dependencies
+4. Install the dependencies
 
    ```bash
    composer install
    ```
 
-6. Run the following command and navigate to [http://localhost:3000](http://localhost:3000).
+5. Run the following command and navigate to [http://localhost:3000](http://localhost:3000).
 
    ```bash
    composer start

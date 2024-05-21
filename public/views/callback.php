@@ -8,14 +8,6 @@ $response = $userManagement->authenticateWithCode(
 );
 
 $user = $response->user;
-
-// $user = (object) [
-//   'firstName' => 'Paul',
-//   'lastName' => 'Asjes',
-//   'email' => 'foo@example.com',
-//   'role' => 'admin',
-//   'id' => 'user_123',
-// ];
 ?>
 
 <!DOCTYPE html>
