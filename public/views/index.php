@@ -1,12 +1,57 @@
 <?php
 
+use WorkOS\UserManagement;
+
 require_once 'shared.php';
+require_once 'session.php';
 
 $authorizationUrl = $userManagement->getAuthorizationUrl(
   $_ENV['WORKOS_REDIRECT_URI'],
   null,
   'authkit'
 );
+
+$user = null;
+
+if (isset($_COOKIE['wos-session'])) {
+  // Decrypt the session
+  $session = getSessionFromCookie();
+
+  $user = $session->user;
+
+  // Check if the session is still valid
+  $isValid = verifyAccessToken($session->access_token);
+
+  if (!$isValid) {
+    error_log('Session invalid, trying refresh token');
+
+    try {
+      $authResult = $userManagement->authenticateWithRefreshToken(
+        $_ENV['WORKOS_CLIENT_ID'],
+        $session->refresh_token,
+      );
+
+      // Refresh tokens are single use, so update the cookie to use the new refresh token
+      setSessionCookie([
+        'refresh_token' => $authResult->refresh_token,
+        'access_token' => $authResult->access_token,
+        'user' => $authResult->user,
+      ]);
+
+      $user = $authResult->user;
+    } catch (\Exception $e) {
+      echo 'Failed to refresh: ' . $e->getMessage();
+
+      // Delete cookie
+      unset($_COOKIE['wos-session']);
+      setcookie('wos-session', '', time() - 3600, '/');
+
+      // Unset user
+      unset($user);
+    }
+  }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -22,11 +67,27 @@ $authorizationUrl = $userManagement->getAuthorizationUrl(
 <body>
   <main>
     <div class="container">
-      <h1>AuthKit authentication example</h1>
-      <p>Sign in to view your account details</p>
-      <a href="<?= $authorizationUrl ?>">
-        <button>Sign in with AuthKit</button>
-      </a>
+      <div class="nav">
+        <a href="/"><button>Home</button></a>
+        <a href="/account"><button>Account</button></a>
+      </div>
+      <div class="content">
+        <h1>AuthKit authentication example</h1>
+        <?php if (isset($user)) : ?>
+          <p>Welcome back, <?= $user->firstName ?></p>
+          <div>
+            <a href="/account"><button>View account</button></a>
+            <form action="signout.php" method="get">
+              <button type="submit">Sign out</button>
+            </form>
+          </div>
+        <?php else : ?>
+          <p>Sign in to view your account details</p>
+          <a href="<?= $authorizationUrl ?>">
+            <button>Sign in with AuthKit</button>
+          </a>
+        <?php endif ?>
+      </div>
     </div>
     <div class="footer">
       <div>

@@ -67,13 +67,31 @@ a {
 
 .container {
   background-color: white;
-  padding: 10rem;
   border: 1px solid lightgray;
   border-radius: 10px;
+  display: grid;
+  flex-direction: column;
+}
+
+.nav {
+  padding-left: 2rem;
+  padding-top: 1rem;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.content {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  padding: 10rem;
+  justify-items: center;
   align-items: center;
+}
+
+.content div {
+  display: flex;
+  gap: 10px;
 }
 
 .account-details li {
