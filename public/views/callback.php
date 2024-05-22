@@ -8,15 +8,10 @@ $response = $userManagement->authenticateWithCode(
   $_GET['code']
 );
 
-$accessToken = $response->access_token;
-$refreshToken = $response->refresh_token;
-
-$user = $response->user;
-
 setSessionCookie([
-  'refresh_token' => $refreshToken,
-  'access_token' => $accessToken,
-  'user' => $user->toArray(),
+  'refresh_token' => $response->refresh_token,
+  'access_token' => $response->access_token,
+  'user' => $response->user->toArray(),
 ]);
 
 header('Location: ' . '/');

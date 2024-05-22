@@ -17,10 +17,10 @@ try {
   $jwksJSON = $response->getBody()->getContents();
   $jwks = json_decode($jwksJSON, true);
 } catch (\Exception $e) {
-  echo "Error fetching JWKS: " . $e->getMessage();
+  error_log('Error fetching JWKS: ' . $e->getMessage());
 }
 
-function encrypt($plaintext, $key, $cipher = "aes-256-gcm")
+function encrypt($plaintext, $key, $cipher = 'aes-256-gcm')
 {
   if (!in_array($cipher, openssl_get_cipher_methods())) {
     return false;
@@ -100,6 +100,7 @@ function verifyAccessToken($accessToken)
     getSessionFromJWT($accessToken);
     return true;
   } catch (\Exception $e) {
+    error_log('Access token verification failed: ' . $e->getMessage());
     return false;
   }
 }

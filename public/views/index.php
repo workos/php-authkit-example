@@ -13,6 +13,7 @@ $authorizationUrl = $userManagement->getAuthorizationUrl(
 
 $user = null;
 
+// If cookie is present, that means we've previously authenticated
 if (isset($_COOKIE['wos-session'])) {
   // Decrypt the session
   $session = getSessionFromCookie();
@@ -40,9 +41,9 @@ if (isset($_COOKIE['wos-session'])) {
 
       $user = $authResult->user;
     } catch (\Exception $e) {
-      echo 'Failed to refresh: ' . $e->getMessage();
+      error_log('Failed to refresh: ' . $e->getMessage());
 
-      // Delete cookie
+      // Auth refresh failed, so delete the cookie and show un-authed view to user
       unset($_COOKIE['wos-session']);
       setcookie('wos-session', '', time() - 3600, '/');
 
